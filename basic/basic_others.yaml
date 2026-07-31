@@ -1,0 +1,79 @@
+ipv6: false   #ip6开关，当为false时，停止解析hostanmes为ip6地址
+prefer-ipv6: false
+mode: rule   #clash工作模式（rule/global/direct,meta暂不支持script）
+log-level: info   #日志等级（info/warning/error/debug/silent）
+
+port: 7890            #本地http代理端口
+socks-port: 7891      #本地socks5代理端口
+mixed-port: 7893      #本地混合代理(http和socks5合并）端口
+redir-port: 7892      #本地Linux/macOS Redir代理端口
+tproxy-port: 7895     #本地Linux Tproxy代理端口
+
+allow-lan: true       #允许局域网连接(false/true)
+bind-address: '*'     #监听IP白名单（当allow-lan：true），只允许列表设备。 *—>全部设备
+
+external-controller: 127.0.0.1:9090     #控制器监听地址
+
+profile:                   #缓存设置(文件位置./cache.db)
+  store-selected: true     #节点状态记忆（若不同配置有同代理名称,设置值共享）
+  store-fake-ip: true      #fake-ip缓存
+
+tcp-concurrent: true  #【Meta专属】TCP连接并发，如果域名解析结果对应多个IP，并发所有IP，选择握手最快的IP进行连接
+unified-delay: true    #开启统一延迟时，会计算 RTT，以消除连接握手等带来的不同类型节点的延迟差异
+
+geo-update-interval: 168     # 更新间隔，单位：小时
+geodata-mode: false          #【Meta专属】使用geoip.dat数据库(默认：false使用mmdb数据库)
+geox-url:
+  geoip: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat'
+  geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat'
+  mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb'
+  asn: 'https://cdn.jsdelivr.net/gh/Loyalsoldier/geoip@release/GeoLite2-ASN.mmdb'
+
+# 嗅探域名 可选配置
+sniffer:
+  enable: true                   #嗅探开关
+  ## 对 redir-host 类型识别的流量进行强制嗅探
+  ## 如：Tun、Redir 和 TProxy 并 DNS 为 redir-host 皆属于
+  force-dns-mapping: true
+  ## 对所有未获取到域名的流量进行强制嗅探
+  parse-pure-ip: true
+  # 是否使用嗅探结果作为实际访问，默认 true
+  # 全局配置，优先级低于 sniffer.sniff 实际配置
+  override-destination: false
+  sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
+    QUIC:
+      ports: [ 443 ]
+
+    TLS:
+      ports: [443, 8443]
+
+    # 默认嗅探 80
+    HTTP:
+      ports: [80, 8080-8880]
+      # 是否使用嗅探结果作为实际访问
+      override-destination: true
+  force-domain:                  #需要强制嗅探的域名，默认只对IP嗅探
+#  - '+' # Force all domain to use sniffer
+  - "+.netflix.com"
+  - "+.nflxvideo.net"
+  - "+.amazonaws.com"
+  - "+.media.dssott.com"
+  ## 对嗅探结果进行跳过
+  skip-domain:                   #列表中的sni字段，保留mapping结果，不通过嗅探还原域名,优先级比force-domain高
+  - '+.apple.com'                #苹果域名，建议加
+  - Mijia Cloud
+  - dlg.io.mi.com
+  - +.oray.com
+  - +.sunlogin.net
+  - +.push.apple.com
+  #- geosite:cn
+  # skip-src-address: # 对于来源ip跳过嗅探
+  #   - 192.168.0.3/32
+  skip-dst-address: # 对于目标ip跳过嗅探
+    - 192.168.0.0/16
+
+url-rewrite:  # HTTP(S) 重写，支持 header、302、307、reject 多种策略
+    - ^https?://(www.)?g.cn http://www.google.com header # 重写请求头的域名
+    - ^https?://(www.)?(g|google).cn https://www.google.com 302 # 直接返回一个 302 重定向的响应
+    - ^https?://(www.)?google.com.hk https://www.google.com 302 # 直接返回一个 302 重定向的响应
+    - ^https?://(www.)?linkedin.cn https://www.linkedin.com 302 # 直接返回一个 302 重定向的响应

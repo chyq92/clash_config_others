@@ -1,0 +1,550 @@
+ipv6: false
+prefer-ipv6: false
+mode: rule
+log-level: info
+port: 7890
+socks-port: 7891
+mixed-port: 7893
+redir-port: 7892
+tproxy-port: 7895
+allow-lan: true
+bind-address: '*'
+external-controller: 127.0.0.1:9090
+profile:                   #缓存设置(文件位置./cache.db)
+  store-selected: true     #节点状态记忆（若不同配置有同代理名称,设置值共享）
+  store-fake-ip: true      #fake-ip缓存
+
+tcp-concurrent: true
+unified-delay: true
+geo-update-interval: 168
+geodata-mode: false
+geox-url:
+  geoip: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geoip.dat'
+  geosite: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/geosite.dat'
+  mmdb: 'https://testingcf.jsdelivr.net/gh/MetaCubeX/meta-rules-dat@release/country.mmdb'
+  asn: 'https://cdn.jsdelivr.net/gh/Loyalsoldier/geoip@release/GeoLite2-ASN.mmdb'
+
+# 嗅探域名 可选配置
+sniffer:
+  enable: true                   #嗅探开关
+  ## 对 redir-host 类型识别的流量进行强制嗅探
+  ## 如：Tun、Redir 和 TProxy 并 DNS 为 redir-host 皆属于
+  force-dns-mapping: true
+  ## 对所有未获取到域名的流量进行强制嗅探
+  parse-pure-ip: true
+  # 是否使用嗅探结果作为实际访问，默认 true
+  # 全局配置，优先级低于 sniffer.sniff 实际配置
+  override-destination: false
+  sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
+    QUIC:
+      ports: [443]
+
+    TLS:
+      ports: [443, 8443]
+
+    # 默认嗅探 80
+    HTTP:
+      ports: [80, 8080-8880]
+      # 是否使用嗅探结果作为实际访问
+      override-destination: true
+  force-domain:                  #需要强制嗅探的域名，默认只对IP嗅探
+#  - '+' # Force all domain to use sniffer
+  - "+.netflix.com"
+  - "+.nflxvideo.net"
+  - "+.amazonaws.com"
+  - "+.media.dssott.com"
+  ## 对嗅探结果进行跳过
+  skip-domain:                   #列表中的sni字段，保留mapping结果，不通过嗅探还原域名,优先级比force-domain高
+  - '+.apple.com'                #苹果域名，建议加
+  - Mijia Cloud
+  - dlg.io.mi.com
+  - +.oray.com
+  - +.sunlogin.net
+  - +.push.apple.com
+  #- geosite:cn
+  # skip-src-address: # 对于来源ip跳过嗅探
+  #   - 192.168.0.3/32
+  skip-dst-address: # 对于目标ip跳过嗅探
+  - 192.168.0.0/16
+
+url-rewrite:  # HTTP(S) 重写，支持 header、302、307、reject 多种策略
+- ^https?://(www.)?g.cn http://www.google.com header     # 重写请求头的域名
+- ^https?://(www.)?(g|google).cn https://www.google.com 302     # 直接返回一个 302 重定向的响应
+- ^https?://(www.)?google.com.hk https://www.google.com 302     # 直接返回一个 302 重定向的响应
+- ^https?://(www.)?linkedin.cn https://www.linkedin.com 302     # 直接返回一个 302 重定向的响应
+find-process-mode: strict
+dns:
+  enable: true   #DNS开关(false/true)
+  listen: 0.0.0.0:53   #DNS监听地址
+  ipv6: false    #IP6解析开关；如果为false，将返回ip6结果为空
+  use-hosts: true   #查询hosts配置并返回真实IP
+
+  default-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  nameserver-policy:
+    'geosite:private':
+    - 127.0.0.1
+    'geosite:gfw':
+    - https://cloudflare-dns.com/dns-query#RULES
+    - https://dns.google/dns-query#RULES
+  nameserver:
+  - https://dns.alidns.com/dns-query
+  - https://doh.pub/dns-query
+
+  proxy-server-nameserver-policy:
+    '*.bestvmr.com': 47.110.75.65:8053
+  proxy-server-nameserver:
+  - 223.5.5.5
+  - 119.29.29.29
+  respect-rules: false
+
+  # direct-nameserver:
+  #   - 223.5.5.5
+  #   - 119.29.29.29
+  # direct-nameserver-follow-policy: false
+
+  enhanced-mode: fake-ip   #DNS模式(redir-host/fake-ip)。【Meta专属】redir-host传递域名，可远程解析
+  fake-ip-range: 198.18.0.1/16   #Fake-IP解析地址池
+  fake-ip-filter-mode: blacklist
+  fake-ip-filter:   #Fake-ip过滤，列表中的域名返回真实ip
+    #LAN
+  - '*.lan'
+  - '*.localdomain'
+  - '*.example'
+  - '*.invalid'
+  - '*.localhost'
+  - '*.test'
+  - '*.local'
+  - '*.home.arpa'
+    #放行NTP服务
+  - 'time.*.com'
+  - 'time.*.gov'
+  - 'time.*.edu.cn'
+  - 'time.*.apple.com'
+  - time-ios.apple.com
+  - 'time1.*.com'
+  - 'time2.*.com'
+  - 'time3.*.com'
+  - 'time4.*.com'
+  - 'time5.*.com'
+  - 'time6.*.com'
+  - 'time7.*.com'
+  - 'ntp.*.com'
+  - 'ntp1.*.com'
+  - 'ntp2.*.com'
+  - 'ntp3.*.com'
+  - 'ntp4.*.com'
+  - 'ntp5.*.com'
+  - 'ntp6.*.com'
+  - 'ntp7.*.com'
+  - '*.time.edu.cn'
+  - '*.ntp.org.cn'
+  - '+.pool.ntp.org'
+  - time1.cloud.tencent.com
+    # QNAP
+  - '*.myqnapcloud.io'
+  - '+.myqnapcloud.com'
+    # Other
+  - 'geosite:private'
+  - 'geosite:cn'
+
+  # fallback:          #回落DNS服务器，支持udp/tcp/dot/doh/doq
+  #   - https://dns.google/dns-query
+  #   - https://one.one.one.one/dns-query
+
+  # fallback-filter:   #回落DNS服务器过滤
+  #   geoip: true      #为真时，不匹配为geoip规则的使用fallback返回结果
+  #   geoip-code: CN   #geoip匹配区域设定
+  #   geosite:         #【Meta专属】设定geosite某分类使用fallback返回结果
+  #     - gfw
+  #   ipcidr:
+  #     - 0.0.0.0/8
+  #     - 10.0.0.0/8
+  #     - 100.64.0.0/10
+  #     - 127.0.0.0/8
+  #     - 169.254.0.0/16
+  #     - 172.16.0.0/12
+  #     - 192.0.0.0/24
+  #     - 192.0.2.0/24
+  #     - 192.88.99.0/24
+  #     - 192.168.0.0/16
+  #     - 198.18.0.0/15
+  #     - 198.51.100.0/24
+  #     - 203.0.113.0/24
+  #     - 224.0.0.0/4
+  #     - 240.0.0.0/4
+  #     - 255.255.255.255/32
+  #   domain:
+  #     - '+.google.com'
+  #     - '+.facebook.com'
+  #     - '+.youtube.com'
+  #     - '+.githubusercontent.com'
+  #     - '+.googlevideo.com'
+  #     - '+.msftconnecttest.com'
+  #     - '+.msftncsi.com'
+subscribe-url: https://
+proxy-providers:
+  云翼:
+    type: http
+    url: https://
+    interval: 3600
+proxy-groups:
+  # 手动选择国家或地区节点；根据“国家或地区策略组”名称对 `proxies` 值进行增删改，须一一对应
+- {name: 🚀 节点选择, type: select, proxies: [♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换, 🎯 全球直连]}
+  # 若机场的 UDP 质量不是很好，导致某游戏无法登录或进入房间，可以添加 `disable-udp: true` 配置项解决
+- {name: 🐟 漏网之鱼, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+
+- {name: 🔍 Google, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 📞 Discord, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 🎞️ Youtube, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 🗺️ 国外媒体, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+
+- {name: 👨🏿‍💻 GitHub, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 📱 Meta, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 🤖 人工智能, type: select, proxies: [🤖 AI自动, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🚀 节点选择, 🐸 手动切换]}
+
+- {name: 🖼️ Adobe, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 💾 Qnap, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: Ⓜ️ 微软服务, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 🍎 苹果服务, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+
+- {name: 🅱️ Bilibili, type: select, proxies: [🎯 全球直连, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇸🇬 新加坡节点, 🐸 手动切换]}
+
+  # 选择`🎯 全球直连`为测试本地网络（运营商网络速度和 IPv6 支持情况），可选择其它节点用于测试机场节点速度和 IPv6 支持情况
+- {name: 📈 网络测试, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+
+- {name: 🐸 手动切换, type: select, include-all: true}
+- {name: ♻️ 自动选择, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50}
+- {name: 🎯 全球直连, type: select, proxies: [DIRECT]}
+- {name: 🛑 广告拦截, type: select, proxies: [REJECT, DIRECT]}
+  # ----------------国家或地区策略组---------------------
+- {name: 🇭🇰 香港节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(港|HK|hk|Hong Kong|HongKong|hongkong)}
+- {name: 🇹🇼 台湾节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(台|新北|彰化|TW|tw|Taiwan)}
+- {name: 🇯🇵 日本节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|jp|Japan)}
+- {name: 🇸🇬 新加坡节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(新加坡|坡|狮城|SG|sg|Singapore)}
+- {name: 🇺🇸 美国节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|us|United States)}
+- {name: 🌐 其他地区, type: select, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, exclude-filter: (?i)(港|台|日|坡|美|官|剩余|距离|套餐)}
+
+- {name: 🤖 AI自动, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 100, exclude-filter: (?i)(港|俄|官|剩余|距离|套餐)}
+rules:
+- GEOSITE,private,🎯 全球直连
+- RULE-SET,BlockWebsite,🛑 广告拦截
+- RULE-SET,AppleIntelligence,🤖 人工智能
+- DOMAIN,s1.fluxlink.top,♻️ 自动选择
+- RULE-SET,YouTube,🎞️ Youtube
+- DOMAIN-SUFFIX,googlevideo.com,🎞️ Youtube
+- DOMAIN-SUFFIX,ytimg.com,🎞️ Youtube
+- RULE-SET,Google,🔍 Google
+- DOMAIN-SUFFIX,goog,🔍 Google
+- DOMAIN-SUFFIX,gvt1.com,🔍 Google
+- IP-CIDR,216.239.32.0/19,🔍 Google,no-resolve
+- IP-CIDR,192.178.0.0/15,🔍 Google,no-resolve
+- RULE-SET,XiaoHongShu,🎯 全球直连
+- RULE-SET,BiliBili,🅱️ Bilibili
+- RULE-SET,Himalaya,🎯 全球直连
+- RULE-SET,ChinaMedia,🎯 全球直连
+- RULE-SET,WeChat,🎯 全球直连
+- RULE-SET,AliPay,🎯 全球直连
+- RULE-SET,Sina,🎯 全球直连
+- RULE-SET,GitHub,👨🏿‍💻 GitHub
+- RULE-SET,Developer,👨🏿‍💻 GitHub
+- RULE-SET,DeveloperWebsite,👨🏿‍💻 GitHub
+- DOMAIN-KEYWORD,browserleaks,🐟 漏网之鱼
+- DOMAIN-KEYWORD,whatismyipaddress,🐟 漏网之鱼
+- RULE-SET,OpenAi,🤖 人工智能
+- DOMAIN-SUFFIX,stripe.network,🤖 人工智能
+- RULE-SET,Copilot,🤖 人工智能
+- DOMAIN-SUFFIX,meta.ai,🤖 人工智能
+- DOMAIN-SUFFIX,ai.meta.com,🤖 人工智能
+- RULE-SET,NAS,💾 Qnap
+- DOMAIN-SUFFIX,fbsbx.com,📱 Meta
+- RULE-SET,Instagram,📱 Meta
+- RULE-SET,Facebook,📱 Meta
+- DOMAIN-SUFFIX,threads.com,📱 Meta
+- DOMAIN-SUFFIX,threads.net,📱 Meta
+- RULE-SET,Telegram,🗺️ 国外媒体
+- RULE-SET,Teams,Ⓜ️ 微软服务
+- RULE-SET,Discord,📞 Discord
+- IP-CIDR,66.22.226.0/23,📞 Discord,no-resolve
+- RULE-SET,TencentVideo,🎯 全球直连
+- RULE-SET,NetEaseMusic,🎯 全球直连
+- RULE-SET,Apple,🍎 苹果服务
+- IP-CIDR,23.5.8.127/32,🍎 苹果服务,no-resolve
+- DOMAIN,p-events-delivery.akamaized.net,🍎 苹果服务
+- DOMAIN-SUFFIX,tl88.net,🍎 苹果服务
+- DOMAIN-SUFFIX,office.com,🎯 全球直连
+- DOMAIN-SUFFIX,office.net,🎯 全球直连
+- DOMAIN-KEYWORD,outlook,🎯 全球直连
+- DOMAIN,m.hotmail.com,🎯 全球直连
+- RULE-SET,Microsoft,Ⓜ️ 微软服务
+- DOMAIN-KEYWORD,msn,Ⓜ️ 微软服务
+- DOMAIN-KEYWORD,azure,Ⓜ️ 微软服务
+- DOMAIN-SUFFIX,nelreports.net,Ⓜ️ 微软服务
+- DOMAIN-KEYWORD,cloudflare,🚀 节点选择
+- RULE-SET,Adobe,🖼️ Adobe
+- DOMAIN-SUFFIX,stikroltiltoowi.net,🖼️ Adobe
+- RULE-SET,Twitter,🗺️ 国外媒体
+- RULE-SET,Baidu,🎯 全球直连
+- RULE-SET,Xunlei,🎯 全球直连
+- RULE-SET,Download,🎯 全球直连
+- RULE-SET,Speedtest,📈 网络测试
+- DOMAIN-SUFFIX,akamaiedge.net,🍎 苹果服务
+- DOMAIN-KEYWORD,apple,🍎 苹果服务
+- RULE-SET,ChinaCompanyIp,🎯 全球直连
+- RULE-SET,ChinaDomain,🎯 全球直连
+- RULE-SET,China,🎯 全球直连
+- DOMAIN-SUFFIX,hk,🇭🇰 香港节点
+- DOMAIN-SUFFIX,tw,🇹🇼 台湾节点
+- DST-PORT,9993,🎯 全球直连   # ZeroTier
+- GEOIP,private,🎯 全球直连,no-resolve
+- GEOIP,CN,🎯 全球直连,no-resolve
+- MATCH,🐟 漏网之鱼
+
+rule-providers:
+  AppleIntelligence:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/chyq92/clash/main/AppleIntelligence.list
+    path: ./rule_provider/AppleIntelligence.list
+    format: text
+    interval: 86400
+  BlockWebsite:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/chyq92/clash/main/BlockWebsite.list
+    path: ./rule_provider/BlockWebsite.list
+    format: text
+    interval: 86400
+  DeveloperWebsite:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/chyq92/clash/main/DeveloperWebsite.list
+    path: ./rule_provider/DeveloperWebsite.list
+    format: text
+    interval: 86400
+  NAS:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/chyq92/clash/main/NAS.list
+    path: ./rule_provider/NAS.list
+    format: text
+    interval: 86400
+  Adobe:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Adobe.list
+    path: ./rule_provider/Adobe.list
+    format: text
+    interval: 86400
+  Apple:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list
+    path: ./rule_provider/Apple.list
+    format: text
+    interval: 86400
+  Copilot:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Copilot/Copilot.list
+    path: ./rule_provider/Copilot.list
+    format: text
+    interval: 86400
+  Developer:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Developer.list
+    path: ./rule_provider/Developer.list
+    format: text
+    interval: 86400
+  Discord:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Discord.list
+    path: ./rule_provider/Discord.list
+    format: text
+    interval: 86400
+  Facebook:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Facebook.list
+    path: ./rule_provider/Facebook.list
+    format: text
+    interval: 86400
+  GitHub:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/GitHub/GitHub.list
+    path: ./rule_provider/GitHub.list
+    format: text
+    interval: 86400
+  Google:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Google/Google.list
+    path: ./rule_provider/Google.list
+    format: text
+    interval: 86400
+  Instagram:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Instagram.list
+    path: ./rule_provider/Instagram.list
+    format: text
+    interval: 86400
+  Microsoft:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Microsoft.list
+    path: ./rule_provider/Microsoft.list
+    format: text
+    interval: 86400
+  OpenAi:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.list
+    path: ./rule_provider/OpenAi.list
+    format: text
+    interval: 86400
+  Speedtest:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Speedtest/Speedtest.list
+    path: ./rule_provider/Speedtest.list
+    format: text
+    interval: 86400
+  Teams:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Teams/Teams.list
+    path: ./rule_provider/Teams.list
+    format: text
+    interval: 86400
+  Telegram:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Telegram/Telegram.list
+    path: ./rule_provider/Telegram.list
+    format: text
+    interval: 86400
+  Twitter:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Twitter.list
+    path: ./rule_provider/Twitter.list
+    format: text
+    interval: 86400
+  YouTube:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/YouTube.list
+    path: ./rule_provider/YouTube.list
+    format: text
+    interval: 86400
+
+  AliPay:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/AliPay/AliPay.list
+    path: ./rule_provider/AliPay.list
+    format: text
+    interval: 86400
+  Baidu:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Baidu.list
+    path: ./rule_provider/Baidu.list
+    format: text
+    interval: 86400
+  BiliBili:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/BiliBili/BiliBili.list
+    path: ./rule_provider/BiliBili.list
+    format: text
+    interval: 86400
+  Himalaya:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Himalaya/Himalaya.list
+    path: ./rule_provider/Himalaya.list
+    format: text
+    interval: 86400
+  NetEaseMusic:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/NetEaseMusic.list
+    path: ./rule_provider/NetEaseMusic.list
+    format: text
+    interval: 86400
+  Sina:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Sina.list
+    path: ./rule_provider/Sina.list
+    format: text
+    interval: 86400
+  TencentVideo:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/TencentVideo/TencentVideo.list
+    path: ./rule_provider/TencentVideo.list
+    format: text
+    interval: 86400
+  WeChat:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/WeChat/WeChat.list
+    path: ./rule_provider/WeChat.list
+    format: text
+    interval: 86400
+  XiaoHongShu:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/XiaoHongShu/XiaoHongShu.list
+    path: ./rule_provider/XiaoHongShu.list
+    format: text
+    interval: 86400
+  Xunlei:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Xunlei.list
+    path: ./rule_provider/Xunlei.list
+    format: text
+    interval: 86400
+  China:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/China/China.list
+    path: ./rule_provider/China.list
+    format: text
+    interval: 86400
+  ChinaCompanyIp:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaCompanyIp.list
+    path: ./rule_provider/ChinaCompanyIp.list
+    format: text
+    interval: 86400
+  ChinaDomain:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/ChinaDomain.list
+    path: ./rule_provider/ChinaDomain.list
+    format: text
+    interval: 86400
+  ChinaMedia:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/ChinaMedia/ChinaMedia.list
+    path: ./rule_provider/ChinaMedia.list
+    format: text
+    interval: 86400
+  Download:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Download.list
+    path: ./rule_provider/Download.list
+    format: text
+    interval: 86400

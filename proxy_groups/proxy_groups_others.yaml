@@ -1,0 +1,38 @@
+proxy-groups:
+  # 手动选择国家或地区节点；根据“国家或地区策略组”名称对 `proxies` 值进行增删改，须一一对应
+- {name: 🚀 节点选择, type: select, proxies: [♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换, 🎯 全球直连]}
+  # 若机场的 UDP 质量不是很好，导致某游戏无法登录或进入房间，可以添加 `disable-udp: true` 配置项解决
+- {name: 🐟 漏网之鱼, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+
+- {name: 🔍 Google, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 📞 Discord, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 🎞️ Youtube, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 🗺️ 国外媒体, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+
+- {name: 👨🏿‍💻 GitHub, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 📱 Meta, type: select, proxies: [🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 🤖 人工智能, type: select, proxies: [🤖 AI自动, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🚀 节点选择, 🐸 手动切换]}
+
+- {name: 🖼️ Adobe, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 💾 Qnap, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: Ⓜ️ 微软服务, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+- {name: 🍎 苹果服务, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+
+- {name: 🅱️ Bilibili, type: select, proxies: [🎯 全球直连, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇸🇬 新加坡节点, 🐸 手动切换]}
+
+  # 选择`🎯 全球直连`为测试本地网络（运营商网络速度和 IPv6 支持情况），可选择其它节点用于测试机场节点速度和 IPv6 支持情况
+- {name: 📈 网络测试, type: select, proxies: [🎯 全球直连, 🚀 节点选择, ♻️ 自动选择, 🇭🇰 香港节点, 🇹🇼 台湾节点, 🇯🇵 日本节点, 🇸🇬 新加坡节点, 🇺🇸 美国节点, 🌐 其他地区, 🐸 手动切换]}
+
+- {name: 🐸 手动切换, type: select, include-all: true}
+- {name: ♻️ 自动选择, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50}
+- {name: 🎯 全球直连, type: select, proxies: [DIRECT]}
+- {name: 🛑 广告拦截, type: select, proxies: [REJECT, DIRECT]}
+  # ----------------国家或地区策略组---------------------
+- {name: 🇭🇰 香港节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(港|HK|hk|Hong Kong|HongKong|hongkong)}
+- {name: 🇹🇼 台湾节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(台|新北|彰化|TW|tw|Taiwan)}
+- {name: 🇯🇵 日本节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(日本|川日|东京|大阪|泉日|埼玉|沪日|深日|JP|jp|Japan)}
+- {name: 🇸🇬 新加坡节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(新加坡|坡|狮城|SG|sg|Singapore)}
+- {name: 🇺🇸 美国节点, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, filter: (?i)(美|波特兰|达拉斯|俄勒冈|凤凰城|费利蒙|硅谷|拉斯维加斯|洛杉矶|圣何塞|圣克拉拉|西雅图|芝加哥|US|us|United States)}
+- {name: 🌐 其他地区, type: select, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 50, exclude-filter: (?i)(港|台|日|坡|美|官|剩余|距离|套餐)}
+
+- {name: 🤖 AI自动, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 100, exclude-filter: (?i)(港|俄|官|剩余|距离|套餐)}

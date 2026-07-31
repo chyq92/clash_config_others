@@ -1,0 +1,6 @@
+subscribe-url: https://
+proxy-providers: 
+  云翼: 
+    type: http
+    url: https://
+    interval: 3600
