@@ -39,7 +39,7 @@ def write_conf_file(output, file, area, basic=False):
         f.writelines(final_text)
     print(f"--------{output_file} is generated.--------")
 
-def shadowrocket_convert(area, client, basic=False, test=False, prefix=None):
+def shadowrocket_convert(area, client, basic=False, test=False, prefix="others"):
     file = create_config_file_name(area, client, test, prefix)
     config = load_yaml(file)
     

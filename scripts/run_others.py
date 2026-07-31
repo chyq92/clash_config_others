@@ -4,6 +4,7 @@ import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
 from utilis.yaml_read_write import *
+from shadowrocket_convert import *
 import copy
 
 def config_create(area, client):
@@ -33,21 +34,21 @@ def remove_exclude_filter(group):
     return group
 
 def config_processing(config, area, client):
-    # modify proxy_groups
-    part = config['proxy-groups']
-    for read_idx in range(len(part)):
-        group = part[read_idx]
-        if client == "shadowrocket":
+    if client == "shadowrocket":
+        # modify proxy_groups
+        part = config['proxy-groups']
+        for read_idx in range(len(part)):
+            group = part[read_idx]
             group = remove_exclude_filter(group)
             if 'proxies' in group:
+                group['proxies'].fa.set_block_style()
                 if group['name'] in ['🐟 漏网之鱼']:
                     group['proxies'].insert(0,'PROXY')
                 elif group['name'] in ['🚀 节点选择']:
                     group['proxies'].insert(1,'PROXY')
             group.fa.set_block_style()
 
-    # modify rules
-    if "shadowrocket" in client:
+        # modify rules
         config['rules'].insert(0,"AND,((NETWORK,UDP),(DST-PORT,443)),DIRECT")
 
     print("proxies, proxy_group and rules are modified.")
@@ -58,15 +59,15 @@ def config_write(config, area, client, prefix='others', test=False):
     print(f"--------{output_file} is generated.--------")
     
 if __name__ == "__main__":
-    config = config_create("cn", "openclash")
-    config_processing(config, "cn", "openclash")
-    config_write(config, "cn", "openclash")
+    # config = config_create("cn", "openclash")
+    # config_processing(config, "cn", "openclash")
+    # config_write(config, "cn", "openclash")
     
     # config = config_create("cn", "clash_verge")
     # config_processing(config, "cn", "clash_verge")
     # config_write(config, "cn", "clash_verge")
 
-    # config = config_create("cn", "shadowrocket")
-    # config_processing(config, "cn", "shadowrocket")
-    # config_write(config, "cn", "shadowrocket")
-    # shadowrocket_convert("cn", "shadowrocket", basic=True)
+    config = config_create("cn", "shadowrocket")
+    config_processing(config, "cn", "shadowrocket")
+    config_write(config, "cn", "shadowrocket")
+    shadowrocket_convert("cn", "shadowrocket", basic=True)
