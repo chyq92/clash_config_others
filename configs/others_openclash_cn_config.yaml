@@ -227,21 +227,19 @@ proxy-groups:
 
 - {name: 🤖 AI自动, type: url-test, include-all: true, url: https://cp.cloudflare.com/generate_204, interval: 300, tolerance: 100, exclude-filter: (?i)(港|俄|官|剩余|距离|套餐)}
 rules:
-- GEOSITE,private,🎯 全球直连
+- DST-PORT,7000,🎯 全球直连   # Apple AirPlay and AirDrop
+- RULE-SET,LocalAreaNetwork,🎯 全球直连
 - RULE-SET,BlockWebsite,🛑 广告拦截
-- RULE-SET,AppleIntelligence,🤖 人工智能
+- RULE-SET,AppleIntelligence,🤖 人工智能   # 这条要放在Apple前面
 - DOMAIN,s1.fluxlink.top,♻️ 自动选择
-- RULE-SET,YouTube,🎞️ Youtube
-- DOMAIN-SUFFIX,googlevideo.com,🎞️ Youtube
-- DOMAIN-SUFFIX,ytimg.com,🎞️ Youtube
+- RULE-SET,YouTube,🎞️ Youtube   # 这条要放在Google前面
 - RULE-SET,Google,🔍 Google
 - DOMAIN-SUFFIX,goog,🔍 Google
 - DOMAIN-SUFFIX,gvt1.com,🔍 Google
 - IP-CIDR,216.239.32.0/19,🔍 Google,no-resolve
 - IP-CIDR,192.178.0.0/15,🔍 Google,no-resolve
 - RULE-SET,XiaoHongShu,🎯 全球直连
-- RULE-SET,BiliBili,🅱️ Bilibili
-- RULE-SET,Himalaya,🎯 全球直连
+- RULE-SET,BiliBili,🅱️ Bilibili   # 这条要放在ChinaMedia前面
 - RULE-SET,ChinaMedia,🎯 全球直连
 - RULE-SET,WeChat,🎯 全球直连
 - RULE-SET,AliPay,🎯 全球直连
@@ -249,23 +247,20 @@ rules:
 - RULE-SET,GitHub,👨🏿‍💻 GitHub
 - RULE-SET,Developer,👨🏿‍💻 GitHub
 - RULE-SET,DeveloperWebsite,👨🏿‍💻 GitHub
-- DOMAIN-KEYWORD,browserleaks,🐟 漏网之鱼
-- DOMAIN-KEYWORD,whatismyipaddress,🐟 漏网之鱼
+- DOMAIN-KEYWORD,browserleaks,🐟 漏网之鱼        # 这条要放在OpenAi前面
+- DOMAIN-KEYWORD,whatismyipaddress,🐟 漏网之鱼   # 这条要放在Copilot前面
 - RULE-SET,OpenAi,🤖 人工智能
-- DOMAIN-SUFFIX,stripe.network,🤖 人工智能
 - RULE-SET,Copilot,🤖 人工智能
-- DOMAIN-SUFFIX,meta.ai,🤖 人工智能
-- DOMAIN-SUFFIX,ai.meta.com,🤖 人工智能
+- RULE-SET,AI_all,🤖 人工智能
+- DOMAIN-SUFFIX,stripe.network,🤖 人工智能
 - RULE-SET,NAS,💾 Qnap
-- DOMAIN-SUFFIX,fbsbx.com,📱 Meta
-- RULE-SET,Instagram,📱 Meta
+- DOMAIN-SUFFIX,fbsbx.com,📱 Meta   # 这条要和Facebook同一分组
+- RULE-SET,Instagram,📱 Meta   # 这条要和Facebook同一分组
 - RULE-SET,Facebook,📱 Meta
 - DOMAIN-SUFFIX,threads.com,📱 Meta
 - DOMAIN-SUFFIX,threads.net,📱 Meta
 - RULE-SET,Telegram,🗺️ 国外媒体
-- RULE-SET,Teams,Ⓜ️ 微软服务
 - RULE-SET,Discord,📞 Discord
-- IP-CIDR,66.22.226.0/23,📞 Discord,no-resolve
 - RULE-SET,TencentVideo,🎯 全球直连
 - RULE-SET,NetEaseMusic,🎯 全球直连
 - RULE-SET,Apple,🍎 苹果服务
@@ -277,13 +272,14 @@ rules:
 - DOMAIN-KEYWORD,outlook,🎯 全球直连
 - DOMAIN,m.hotmail.com,🎯 全球直连
 - RULE-SET,Microsoft,Ⓜ️ 微软服务
-- DOMAIN-KEYWORD,msn,Ⓜ️ 微软服务
-- DOMAIN-KEYWORD,azure,Ⓜ️ 微软服务
+  #- DOMAIN-KEYWORD,msn,Ⓜ️ 微软服务
+  #- DOMAIN-KEYWORD,azure,Ⓜ️ 微软服务
 - DOMAIN-SUFFIX,nelreports.net,Ⓜ️ 微软服务
 - DOMAIN-KEYWORD,cloudflare,🚀 节点选择
 - RULE-SET,Adobe,🖼️ Adobe
-- DOMAIN-SUFFIX,stikroltiltoowi.net,🖼️ Adobe
 - RULE-SET,Twitter,🗺️ 国外媒体
+- RULE-SET,Tencent,🎯 全球直连
+- RULE-SET,Alibaba,🎯 全球直连
 - RULE-SET,Baidu,🎯 全球直连
 - RULE-SET,Xunlei,🎯 全球直连
 - RULE-SET,Download,🎯 全球直连
@@ -293,9 +289,10 @@ rules:
 - RULE-SET,ChinaCompanyIp,🎯 全球直连
 - RULE-SET,ChinaDomain,🎯 全球直连
 - RULE-SET,China,🎯 全球直连
+- DOMAIN-SUFFIX,cn,🎯 全球直连
 - DOMAIN-SUFFIX,hk,🇭🇰 香港节点
 - DOMAIN-SUFFIX,tw,🇹🇼 台湾节点
-- DST-PORT,9993,🎯 全球直连   # ZeroTier
+- DOMAIN-KEYWORD,-cn,🎯 全球直连
 - GEOIP,private,🎯 全球直连,no-resolve
 - GEOIP,CN,🎯 全球直连,no-resolve
 - MATCH,🐟 漏网之鱼
@@ -322,6 +319,13 @@ rule-providers:
     path: ./rule_provider/DeveloperWebsite.list
     format: text
     interval: 86400
+  LocalAreaNetwork:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/LocalAreaNetwork.list
+    path: ./rule_provider/LocalAreaNetwork.list
+    format: text
+    interval: 86400
   NAS:
     type: http
     behavior: classical
@@ -334,6 +338,13 @@ rule-providers:
     behavior: classical
     url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Adobe.list
     path: ./rule_provider/Adobe.list
+    format: text
+    interval: 86400
+  AI_all:
+    type: http
+    behavior: classical
+    url: https://cdn.jsdelivr.net/gh/VPSDance/ai-proxy-rules@main/rules/shadowrocket/all.list
+    path: ./rule_provider/AI_all.list
     format: text
     interval: 86400
   Apple:
@@ -413,13 +424,6 @@ rule-providers:
     path: ./rule_provider/Speedtest.list
     format: text
     interval: 86400
-  Teams:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Teams/Teams.list
-    path: ./rule_provider/Teams.list
-    format: text
-    interval: 86400
   Telegram:
     type: http
     behavior: classical
@@ -441,7 +445,13 @@ rule-providers:
     path: ./rule_provider/YouTube.list
     format: text
     interval: 86400
-
+  Alibaba:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/refs/heads/master/Clash/Ruleset/Alibaba.list
+    path: ./rule_provider/Alibaba.list
+    format: text
+    interval: 86400
   AliPay:
     type: http
     behavior: classical
@@ -463,13 +473,6 @@ rule-providers:
     path: ./rule_provider/BiliBili.list
     format: text
     interval: 86400
-  Himalaya:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Himalaya/Himalaya.list
-    path: ./rule_provider/Himalaya.list
-    format: text
-    interval: 86400
   NetEaseMusic:
     type: http
     behavior: classical
@@ -482,6 +485,13 @@ rule-providers:
     behavior: classical
     url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Sina.list
     path: ./rule_provider/Sina.list
+    format: text
+    interval: 86400
+  Tencent:
+    type: http
+    behavior: classical
+    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Tencent/Tencent.list
+    path: ./rule_provider/Tencent.list
     format: text
     interval: 86400
   TencentVideo:
@@ -547,3 +557,4 @@ rule-providers:
     path: ./rule_provider/Download.list
     format: text
     interval: 86400
+
