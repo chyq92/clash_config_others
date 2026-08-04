@@ -42,7 +42,7 @@ sniffer:
   override-destination: false
   sniff: # TLS 和 QUIC 默认如果不配置 ports 默认嗅探 443
     QUIC:
-      ports: [ 443 ]
+      ports: [443]
 
     TLS:
       ports: [443, 8443]
@@ -75,5 +75,4 @@ sniffer:
 url-rewrite:  # HTTP(S) 重写，支持 header、302、307、reject 多种策略
     - ^https?://(www.)?g.cn http://www.google.com header # 重写请求头的域名
     - ^https?://(www.)?(g|google).cn https://www.google.com 302 # 直接返回一个 302 重定向的响应
-    - ^https?://(www.)?google.com.hk https://www.google.com 302 # 直接返回一个 302 重定向的响应
-    - ^https?://(www.)?linkedin.cn https://www.linkedin.com 302 # 直接返回一个 302 重定向的响应
+
