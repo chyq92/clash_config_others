@@ -10,20 +10,19 @@ rules:
   - DOMAIN-SUFFIX,gvt1.com,🔍 Google
   - IP-CIDR,216.239.32.0/19,🔍 Google,no-resolve
   - IP-CIDR,192.178.0.0/15,🔍 Google,no-resolve
+  - RULE-SET,AliPay,🎯 全球直连
   - RULE-SET,XiaoHongShu,🎯 全球直连
   - RULE-SET,BiliBili,🅱️ Bilibili # 这条要放在ChinaMedia前面
   - RULE-SET,ChinaMedia,🎯 全球直连
   - RULE-SET,WeChat,🎯 全球直连
-  - RULE-SET,AliPay,🎯 全球直连
   - RULE-SET,Sina,🎯 全球直连
   - RULE-SET,GitHub,👨🏿‍💻 GitHub
   - RULE-SET,Developer,👨🏿‍💻 GitHub
   - RULE-SET,DeveloperWebsite,👨🏿‍💻 GitHub
   - DOMAIN-KEYWORD,browserleaks,🐟 漏网之鱼      # 这条要放在OpenAi前面
   - DOMAIN-KEYWORD,whatismyipaddress,🐟 漏网之鱼 # 这条要放在Copilot前面
-  - RULE-SET,OpenAi,🤖 人工智能
-  - RULE-SET,Copilot,🤖 人工智能
-  - RULE-SET,AI_all,🤖 人工智能
+  - RULE-SET,AI_cn,🎯 全球直连
+  - RULE-SET,AI_global,🤖 人工智能
   - DOMAIN-SUFFIX,stripe.network,🤖 人工智能
   - RULE-SET,NAS,💾 Qnap
   - DOMAIN-SUFFIX,fbsbx.com,📱 Meta # 这条要和Facebook同一分组
@@ -112,11 +111,18 @@ rule-providers:
     path: ./rule_provider/Adobe.list
     format: text
     interval: 86400
-  AI_all:
+  AI_cn:
     type: http
     behavior: classical
-    url: https://cdn.jsdelivr.net/gh/VPSDance/ai-proxy-rules@main/rules/shadowrocket/all.list
-    path: ./rule_provider/AI_all.list
+    url: https://cdn.jsdelivr.net/gh/VPSDance/ai-proxy-rules@main/rules/shadowrocket/cn.list
+    path: ./rule_provider/AI_cn.list
+    format: text
+    interval: 86400
+  AI_global:
+    type: http
+    behavior: classical
+    url: https://cdn.jsdelivr.net/gh/VPSDance/ai-proxy-rules@main/rules/shadowrocket/global.list
+    path: ./rule_provider/AI_global.list
     format: text
     interval: 86400
   Apple:
@@ -124,13 +130,6 @@ rule-providers:
     behavior: classical
     url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Apple.list
     path: ./rule_provider/Apple.list
-    format: text
-    interval: 86400
-  Copilot:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/Copilot/Copilot.list
-    path: ./rule_provider/Copilot.list
     format: text
     interval: 86400
   Developer:
@@ -180,13 +179,6 @@ rule-providers:
     behavior: classical
     url: https://raw.githubusercontent.com/ACL4SSR/ACL4SSR/master/Clash/Ruleset/Microsoft.list
     path: ./rule_provider/Microsoft.list
-    format: text
-    interval: 86400
-  OpenAi:
-    type: http
-    behavior: classical
-    url: https://raw.githubusercontent.com/blackmatrix7/ios_rule_script/master/rule/Clash/OpenAI/OpenAI.list
-    path: ./rule_provider/OpenAi.list
     format: text
     interval: 86400
   Speedtest:
