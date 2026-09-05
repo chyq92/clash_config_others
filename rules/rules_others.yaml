@@ -13,20 +13,24 @@ rules:
   - RULE-SET,AliPay,🎯 全球直连
   - RULE-SET,XiaoHongShu,🎯 全球直连
   - RULE-SET,BiliBili,🅱️ Bilibili # 这条要放在ChinaMedia前面
+  - RULE-SET,AI_cn,🎯 全球直连    # 这条要放在ChinaMedia前面
   - RULE-SET,ChinaMedia,🎯 全球直连
   - RULE-SET,WeChat,🎯 全球直连
   - RULE-SET,Sina,🎯 全球直连
+  - RULE-SET,LinkedIn,💼 Work
   - RULE-SET,GitHub,👨🏿‍💻 GitHub
   - RULE-SET,Developer,👨🏿‍💻 GitHub
   - RULE-SET,DeveloperWebsite,👨🏿‍💻 GitHub
-  - DOMAIN-KEYWORD,browserleaks,🐟 漏网之鱼      # 这条要放在OpenAi前面
-  - DOMAIN-KEYWORD,whatismyipaddress,🐟 漏网之鱼 # 这条要放在Copilot前面
-  - RULE-SET,AI_cn,🎯 全球直连
+  - DOMAIN-KEYWORD,browserleaks,🐟 漏网之鱼      # 这条要放在AI_global前面
+  - DOMAIN-KEYWORD,whatismyipaddress,🐟 漏网之鱼 # 这条要放在AI_global前面
+  - RULE-SET,NAS,💾 Qnap # 这条要放在Whatsapp和AI_global前面
   - RULE-SET,AI_global,🤖 人工智能
+  - RULE-SET,Copilot,🤖 人工智能 # 这条要放在Microsoft前面
+  - DOMAIN-KEYWORD,copilot,🤖 人工智能 # 这条要放在Microsoft前面
   - DOMAIN-SUFFIX,stripe.network,🤖 人工智能
-  - RULE-SET,NAS,💾 Qnap
+  - RULE-SET,Whatsapp,💼 Work
   - DOMAIN-SUFFIX,fbsbx.com,📱 Meta # 这条要和Facebook同一分组
-  - RULE-SET,Instagram,📱 Meta # 这条要和Facebook同一分组
+  - RULE-SET,Instagram,📱 Meta      # 这条要和Facebook同一分组
   - RULE-SET,Facebook,📱 Meta
   - DOMAIN-SUFFIX,threads.com,📱 Meta
   - DOMAIN-SUFFIX,threads.net,📱 Meta
@@ -35,7 +39,6 @@ rules:
   - RULE-SET,TencentVideo,🎯 全球直连
   - RULE-SET,NetEaseMusic,🎯 全球直连
   - RULE-SET,Apple,🍎 苹果服务
-  - IP-CIDR,23.5.8.127/32,🍎 苹果服务,no-resolve
   - DOMAIN,p-events-delivery.akamaized.net,🍎 苹果服务
   - DOMAIN-SUFFIX,tl88.net,🍎 苹果服务
   - DOMAIN-SUFFIX,office.com,🎯 全球直连
