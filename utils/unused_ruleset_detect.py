@@ -1,6 +1,6 @@
 from yaml_read_write import *
 
-data = load_yaml("rules\\rules_others.yaml")
+data = load_yaml("rules\\rules.yaml")
 
 rules = []
 for r in data['rules']:

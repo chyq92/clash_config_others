@@ -3,7 +3,7 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from utilis.yaml_read_write import *
+from utils.yaml_read_write import *
 from shadowrocket_convert import *
 import copy
 

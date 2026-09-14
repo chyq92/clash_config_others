@@ -12,13 +12,15 @@ def load_yaml(file_path):
     with open(file_path, 'r', encoding='utf-8') as file:
         return yaml.load(file)
 
-def create_config_file_name(area, client, test=False, prefix=None):
+def create_config_file_name(area, client, test=False, prefix=None, suffix=None):
     file = "configs\\"
     if client == 'home':
         client = 'openclash'
     if prefix:
         file += prefix + "_"
     file += client + "_" + area + "_config"
+    if suffix:
+        file += "_" + suffix
     if test:
         file += "_test"
     file += ".yaml"

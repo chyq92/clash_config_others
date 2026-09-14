@@ -2,13 +2,13 @@ import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(__file__)))
 
-from utilis.yaml_read_write import *
+from utils.yaml_read_write import *
 import copy
 
 def update_basic_file(area):
-    with open("basic\\shadowrocket_basic_others.conf", "r", encoding="utf-8") as b:
+    with open("basic\\shadowrocket_basic.conf", "r", encoding="utf-8") as b:
         basic_output = b.readlines()
-    dns = load_yaml(f"dns\\dns_others.yaml")
+    dns = load_yaml(f"dns\\dns_{area}.yaml")
 
     for i in range(len(basic_output)):
         line = basic_output[i]
@@ -39,7 +39,7 @@ def write_conf_file(output, file, area, basic=False):
         f.writelines(final_text)
     print(f"--------{output_file} is generated.--------")
 
-def shadowrocket_convert(area, client, basic=False, test=False, prefix="others"):
+def shadowrocket_convert(area, client, basic=False, test=False, prefix=None):
     file = create_config_file_name(area, client, test, prefix)
     config = load_yaml(file)
     
