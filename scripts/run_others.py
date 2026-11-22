@@ -33,7 +33,7 @@ def remove_exclude_filter(group):
         del group['exclude-filter']
     return group
 
-def config_processing(config, area, client):
+def config_processing(config, client):
     if client == "shadowrocket":
         # modify proxy_groups
         part = config['proxy-groups']
